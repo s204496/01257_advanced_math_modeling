@@ -113,3 +113,5 @@ fig.colorbar(surf, ax=ax, shrink=0.5, aspect=10)
 
 plt.tight_layout()
 plt.show()
+
+# %%
