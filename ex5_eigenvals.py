@@ -1,5 +1,7 @@
 #%%
 import sympy as sp
+import numpy as np
+
 a = sp.Symbol("a", positive=True, real=True)
 b = sp.Symbol("b", positive=True, real=True)
 
@@ -30,6 +32,46 @@ A2 = sp.BlockMatrix([
     [B_b,A_b]
     ]).as_explicit()
 
+def get_AN(N, get_block = False):
+    if get_block == False:
+        A_b = sp.Matrix([
+            [0,-1],
+            [a,-1]
+        ])
+
+        B_b = sp.Matrix([
+            [0,1],
+            [0,1-b]
+        ])
+
+        O_b = sp.Matrix([
+            [0,0],
+            [0,0]
+        ])
+
+    elif get_block:
+        A_b = sp.Symbol("A")
+        B_b = sp.Symbol("B")
+        O_b = sp.Symbol("O")
+
+    AN = []
+    for ni in range(N):
+        An = []
+        for nj in range(N):
+            if nj == 0 and ni == N-1:
+                An.append(B_b)
+            elif ni == nj:
+                An.append(A_b)
+            elif ni == nj-1:
+                An.append(B_b)
+            else:
+                An.append(O_b)
+        AN.append(An)
+    
+    if get_block:
+        return sp.Matrix(AN)
+    else:
+        return sp.BlockMatrix(AN).as_explicit()
 
 #%%
 import matplotlib.pyplot as plt
@@ -115,3 +157,27 @@ plt.tight_layout()
 plt.show()
 
 # %%
+
+def get_P(N,get_block=False):
+    if get_block:
+        P = np.zeros((N,N),dtype=np.int16)
+        for i in range(len(P)):
+            P[-i-1][i]=1
+    else:
+        P = np.zeros((2*N,2*N),dtype=np.int16)
+        for i in range(len(P)):
+            P[-i-1][i]=1
+    return sp.Matrix(P)
+
+N = 4
+get_block = False
+
+AN = get_AN(N, get_block=get_block)
+
+P = get_P(N,get_block)
+
+ANP = AN @ P
+ANP
+
+#%%
+ANP.eigenvals()
