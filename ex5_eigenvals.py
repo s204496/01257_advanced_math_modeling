@@ -80,8 +80,11 @@ eigenvals = [i for i in list(A3.eigenvals().keys())]
 print(eigenvals[0])
 
 
-# var_vals = {a:1,b:1}
-# eigenvals[1].subs(var_vals).simplify().evalf()
+var_vals = {a:1,b:1}
+for eig in eigenvals:
+    display(eig.subs(var_vals).simplify().evalf())
+
+#%%
 
 N = 70
 min_val, max_val =  1e-3,2
